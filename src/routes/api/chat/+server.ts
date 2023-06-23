@@ -16,7 +16,7 @@ export const POST = (async ({ request }) => {
 		model: 'gpt-3.5-turbo',
 		stream: true,
 		messages: messages.map((message: any) => ({
-			content: message.content,
+			content: `${message.content} (if you give code example, in the markdown specify the language)`,
 			role: message.role
 		}))
 	});
