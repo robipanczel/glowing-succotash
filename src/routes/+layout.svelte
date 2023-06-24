@@ -2,14 +2,18 @@
 	import '@skeletonlabs/skeleton/themes/theme-hamlindigo.css';
 	import '@skeletonlabs/skeleton/styles/skeleton.css';
 	import '../app.postcss';
+	import { AppShell } from '@skeletonlabs/skeleton';
+	import { AppBar } from '@skeletonlabs/skeleton';
 </script>
 
-<div class="app">
-	<main>
-		<slot />
-	</main>
+<AppShell>
+	<svelte:fragment slot="header">
+		<AppBar>Skeleton</AppBar>
+	</svelte:fragment>
+	<svelte:fragment slot="sidebarLeft">Sidebar Left</svelte:fragment>
+	<svelte:fragment slot="sidebarRight">Sidebar Right</svelte:fragment>
 
-	<footer>
-		<p>This is a footer</p>
-	</footer>
-</div>
+	<slot />
+
+	<svelte:fragment slot="pageFooter">Page Footer</svelte:fragment>
+</AppShell>
