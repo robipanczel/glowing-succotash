@@ -8,7 +8,11 @@
 
 <AppShell>
 	<svelte:fragment slot="header">
-		<AppBar>Skeleton</AppBar>
+		<AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" slotTrail="place-content-end">
+			<svelte:fragment slot="lead">(icon)</svelte:fragment>
+			Code Whisperer
+			<svelte:fragment slot="trail">(actions)</svelte:fragment>
+		</AppBar>
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft">Sidebar Left</svelte:fragment>
 	<svelte:fragment slot="sidebarRight">Sidebar Right</svelte:fragment>
