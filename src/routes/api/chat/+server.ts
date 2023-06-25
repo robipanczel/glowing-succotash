@@ -11,10 +11,9 @@ const openai = new OpenAIApi(config);
 
 export const POST = (async ({ request }) => {
 	const { messages } = await request.json();
-	console.log(messages);
 
 	const response = await openai.createChatCompletion({
-		model: 'gpt-3.5-turbo',
+		model: 'gpt-3.5-turbo-0613',
 		stream: true,
 		messages: messages.map((message: any) => ({
 			content: `${message.content}. If you give code example, specify the language in the markdown.`,

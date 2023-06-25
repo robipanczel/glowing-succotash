@@ -11,7 +11,7 @@
 	import { readable } from 'svelte/store';
 	import { onDestroy } from 'svelte';
 
-	const { input, handleSubmit, messages } = useChat();
+	const { input, handleSubmit, messages, error } = useChat();
 
 	const unsub = messages.subscribe((msgs: Message[]) =>
 		msgs.length ? scrollChatBottom('smooth') : null
@@ -50,62 +50,73 @@
 	<meta name="description" content="Sveltekit app to use chatgpt" />
 </svelte:head>
 
-<section class="w-full h-full p-4 overflow-y-auto space-y-4">
-	{#each $messages as message}
-		{#if message.role === 'user'}
-			<div class="grid grid-cols-[1fr_auto] gap-2">
-				<div class="card p-4 rounded-tr-none space-y-2">
-					<header class="flex justify-between items-center">
-						<p class="font-bold">{message.role}</p>
-						<small class="opacity-50">{message.createdAt}</small>
-					</header>
-					<p>
-						{@html marked(message.content, {
-							highlight: (code, lang) => highlight(code, languages[lang] || languages.markup, lang),
-							mangle: false
-						})}
-					</p>
-				</div>
-				<Avatar initials={message.role} background="bg-primary-500" width="w-12" />
-			</div>
-		{:else if message.role === 'assistant'}
-			<div class="grid grid-cols-[auto_1fr] gap-2">
-				<Avatar initials={message.role} background="bg-primary-500" width="w-12" />
-				<div class="card p-4 variant-soft rounded-tl-none space-y-2">
-					<header class="flex justify-between items-center">
-						<p class="font-bold">{message.role}</p>
-						<small class="opacity-50">{message.createdAt}</small>
-					</header>
-					<p>
-						{@html marked(message.content, {
-							highlight: (code, lang) => highlight(code, languages[lang] || languages.markup, lang),
-							mangle: false
-						})}
-					</p>
-				</div>
-			</div>
-		{:else}
-			<li>
-				{message.role}: {@html marked(message.content, {
-					highlight: (code, lang) => highlight(code, languages[lang] || languages.markup, lang),
-					mangle: false
-				})}
-			</li>
+<section class="flex flex-col w-full h-full p-4 overflow-y-auto space-y-4">
+	<div class="mt-auto">
+		{#if $error}
+			{$error}
 		{/if}
-	{/each}
+		{#each $messages as message}
+			{#if message.role === 'user'}
+				<div class="grid grid-cols-[1fr_auto] gap-2">
+					<div class="card p-4 rounded-tr-none space-y-2">
+						<header class="flex justify-between items-center">
+							<p class="font-bold">{message.role}</p>
+							<small class="opacity-50">{message.createdAt}</small>
+						</header>
+						<p>
+							{@html marked(message.content, {
+								highlight: (code, lang) =>
+									highlight(code, languages[lang] || languages.markup, lang),
+								mangle: false
+							})}
+						</p>
+					</div>
+					<Avatar initials={message.role} background="bg-primary-500" width="w-12" />
+				</div>
+			{:else if message.role === 'assistant'}
+				<div class="grid grid-cols-[auto_1fr] gap-2">
+					<Avatar initials={message.role} background="bg-primary-500" width="w-12" />
+					<div class="card p-4 variant-soft rounded-tl-none space-y-2">
+						<header class="flex justify-between items-center">
+							<p class="font-bold">{message.role}</p>
+							<small class="opacity-50">{message.createdAt}</small>
+						</header>
+						<p>
+							{@html marked(message.content, {
+								highlight: (code, lang) => {
+									console.log(code);
+									highlight(code, languages[lang] || languages.markup, lang);
+								},
+								mangle: false
+							})}
+						</p>
+					</div>
+				</div>
+			{:else}
+				<li>
+					{message.role}: {@html marked(message.content, {
+						highlight: (code, lang) => highlight(code, languages[lang] || languages.markup, lang),
+						mangle: false
+					})}
+				</li>
+			{/if}
+		{/each}
 
-	<form on:submit={handleSubmit} bind:this={elemChat}>
-		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] rounded-container-token">
-			<button type="submit" class="input-group-shim">+</button>
-			<textarea
-				bind:value={$input}
-				class="bg-transparent border-0 ring-0"
-				name="prompt"
-				id="prompt"
-				placeholder="Write a message..."
-				rows="1"
-			/>
-			<button type="submit" class="variant-filled-primary">Send</button>
-		</div>
-	</form>
+		<form on:submit={handleSubmit} bind:this={elemChat}>
+			<div
+				class="input-group input-group-divider grid-cols-[auto_1fr_auto] rounded-container-token"
+			>
+				<button class="input-group-shim">+</button>
+				<textarea
+					bind:value={$input}
+					class="bg-transparent border-0 ring-0"
+					name="prompt"
+					id="prompt"
+					placeholder="Write a message..."
+					rows="1"
+				/>
+				<button type="submit" class="variant-filled-primary">Send</button>
+			</div>
+		</form>
+	</div>
 </section>
